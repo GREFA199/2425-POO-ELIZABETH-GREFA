@@ -21,6 +21,7 @@ def mostrar_menu():
         '2': 'Unidad 2/Semana05_POO.py',
         '3': 'Unidad 2/Semana06_POO.py',
         '4': 'Unidad 2/Semana07_POO.py',
+        '5': 'Unidad 3/Semana09_POO.py',
     }
 
     while True:
