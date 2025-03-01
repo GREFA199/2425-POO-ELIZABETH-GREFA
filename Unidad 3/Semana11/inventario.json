@@ -1,1 +1,27 @@
+{
+    "2001": {
+        "id": "2001",
+        "nombre": "Galletas",
+        "stock": 25,
+        "precio": 0.75
+    },
+    "2002": {
+        "id": "2002",
+        "nombre": "Refresco",
+        "stock": 15,
+        "precio": 1.25
+    },
+    "2003": {
+        "id": "2003",
+        "nombre": "Cereal",
+        "stock": 20,
+        "precio": 2.0
+    },
+    "2004": {
+        "id": "2004",
+        "nombre": "Jugo",
+        "stock": 30,
+        "precio": 1.10
+    }
+}
 
