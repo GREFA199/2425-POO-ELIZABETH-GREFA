@@ -1,79 +1,72 @@
 import tkinter as tk
 from tkinter import font
 
-# Inicializar ventana
-ventana = tk.Tk()
-ventana.title("Organizador de Tareas")
-ventana.geometry("500x480")
-ventana.configure(bg="#f0f0f0")
+class TaskApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Organizador de Tareas")
+        self.root.geometry("500x480")
+        self.root.configure(bg="#f0f0f0")
 
-# Lista para llevar control del estado de cada tarea (False: pendiente, True: completada)
-estados = []
+        self.estados = []  # False = pendiente, True = completada
 
-# Fuente tachada
-fuente_tachada = font.Font(overstrike=1)
-fuente_normal = font.Font(overstrike=0)
+        # Fuentes
+        self.fuente_normal = font.Font(family="Arial", size=12)
+        self.fuente_tachada = font.Font(family="Arial", size=12, overstrike=1)
 
-# Campo de entrada
-entrada = tk.Entry(ventana, width=35, font=("Arial", 12))
-entrada.place(x=20, y=20)
+        # Widgets
+        self.entrada = tk.Entry(root, width=35, font=("Arial", 12))
+        self.entrada.place(x=20, y=20)
 
-# Listbox para mostrar tareas
-lista = tk.Listbox(ventana, width=50, height=15, font=("Arial", 12))
-lista.place(x=20, y=60)
+        self.lista = tk.Listbox(root, width=50, height=15, font=self.fuente_normal)
+        self.lista.place(x=20, y=60)
 
-# Funciones
-def agregar(event=None):
-    texto = entrada.get().strip()
-    if texto:
-        lista.insert(tk.END, texto)
-        estados.append(False)
-        entrada.delete(0, tk.END)
+        self.btn_agregar = tk.Button(root, text="Agregar", width=15, command=self.agregar, bg="#90ee90")
+        self.btn_agregar.place(x=370, y=17)
 
-def completar(event=None):
-    seleccion = lista.curselection()
-    if seleccion:
-        i = seleccion[0]
-        texto = lista.get(i)
-        lista.delete(i)
-        estados[i] = not estados[i]
-        nuevo_texto = texto
-        lista.insert(i, nuevo_texto)
+        self.btn_completar = tk.Button(root, text="Completar", width=20, command=self.completar)
+        self.btn_completar.place(x=80, y=380)
 
-        # Aplicar estilo tachado o normal
-        if estados[i]:
-            lista.itemconfig(i, {'fg': 'green', 'font': fuente_tachada})
-        else:
-            lista.itemconfig(i, {'fg': 'black', 'font': fuente_normal})
+        self.btn_eliminar = tk.Button(root, text="Eliminar", width=20, command=self.eliminar)
+        self.btn_eliminar.place(x=260, y=380)
 
-def eliminar(event=None):
-    seleccion = lista.curselection()
-    if seleccion:
-        i = seleccion[0]
-        lista.delete(i)
-        del estados[i]
+        # Atajos de teclado
+        root.bind("<Return>", self.agregar)
+        root.bind("<c>", self.completar)
+        root.bind("<C>", self.completar)
+        root.bind("<d>", self.eliminar)
+        root.bind("<D>", self.eliminar)
+        root.bind("<Escape>", lambda event: root.destroy())
 
-def cerrar(event=None):
-    ventana.destroy()
+    def agregar(self, event=None):
+        texto = self.entrada.get().strip()
+        if texto:
+            self.lista.insert(tk.END, texto)
+            self.lista.itemconfig(tk.END, {'fg': 'black', 'font': self.fuente_normal})
+            self.estados.append(False)
+            self.entrada.delete(0, tk.END)
 
-# Botones
-btn_agregar = tk.Button(ventana, text="Agregar", width=15, command=agregar, bg="#90ee90")
-btn_agregar.place(x=370, y=17)
+    def completar(self, event=None):
+        seleccion = self.lista.curselection()
+        if seleccion:
+            i = seleccion[0]
+            self.estados[i] = not self.estados[i]
 
-btn_completar = tk.Button(ventana, text="Completar", width=20, command=completar)
-btn_completar.place(x=80, y=380)
+            if self.estados[i]:  # Completada
+                self.lista.itemconfig(i, {'fg': 'green', 'font': self.fuente_tachada})
+            else:  # Pendiente
+                self.lista.itemconfig(i, {'fg': 'black', 'font': self.fuente_normal})
 
-btn_eliminar = tk.Button(ventana, text="Eliminar", width=20, command=eliminar)
-btn_eliminar.place(x=260, y=380)
+    def eliminar(self, event=None):
+        seleccion = self.lista.curselection()
+        if seleccion:
+            i = seleccion[0]
+            self.lista.delete(i)
+            del self.estados[i]
 
-# Atajos de teclado
-ventana.bind("<Return>", agregar)
-ventana.bind("<c>", completar)
-ventana.bind("<C>", completar)
-ventana.bind("<d>", eliminar)
-ventana.bind("<D>", eliminar)
-ventana.bind("<Escape>", cerrar)
 
-# Iniciar la app
-ventana.mainloop()
-
+# Ejecutar la app
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = TaskApp(root)
+    root.mainloop()
